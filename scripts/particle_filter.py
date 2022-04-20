@@ -75,7 +75,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 10000
+        self.num_particles = 20 #10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -122,8 +122,20 @@ class ParticleFilter:
     
 
     def initialize_particle_cloud(self):
-        
         # TODO
+
+        # Get map width and height
+        map_width = self.map.info.width
+        map_height = self.map.info.height
+
+        for i in range(self.num_particles):
+            # create a new particle
+            randPosition = Point(random.randrange(0, map_width), random.randrange(0, map_height), 0)
+            randQuat = quaternion_from_euler(0, 0, random.random() * 2 * math.pi)
+            p = Particle(Pose(randPosition, randQuat), 1.0)
+
+            # add the particle to the particle cloud
+            self.particle_cloud.append(p)
 
 
         self.normalize_particles()
@@ -132,10 +144,21 @@ class ParticleFilter:
 
 
     def normalize_particles(self):
-        # make all the particle weights sum to 1.0
-        
         # TODO
+        # make all the particle weights sum to 1.0
 
+        total_weight = 0
+        for i in range(self.num_particles):
+            total_weight += self.particle_cloud[i].w
+
+        for i in range(self.num_particles):
+            self.particle_cloud[i].w /= total_weight
+
+        check_total = 0
+        for i in range(self.num_particles):
+            check_total += self.particle_cloud[i].w
+
+        print(check_total)
 
 
     def publish_particle_cloud(self):
