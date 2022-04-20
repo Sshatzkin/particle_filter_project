@@ -16,7 +16,7 @@ import numpy as np
 from numpy.random import random_sample
 import math
 
-from random import randint, random
+from random import randint, random, randrange
 
 
 
@@ -130,8 +130,8 @@ class ParticleFilter:
 
         for i in range(self.num_particles):
             # create a new particle
-            randPosition = Point(random.randrange(0, map_width), random.randrange(0, map_height), 0)
-            randQuat = quaternion_from_euler(0, 0, random.random() * 2 * math.pi)
+            randPosition = Point(randrange(0, map_width), randrange(0, map_height), 0)
+            randQuat = quaternion_from_euler(0, 0, random() * 2 * math.pi)
             p = Particle(Pose(randPosition, randQuat), 1.0)
 
             # add the particle to the particle cloud
@@ -187,7 +187,7 @@ class ParticleFilter:
     def resample_particles(self):
 
         # TODO
-
+        return
 
 
     def robot_scan_received(self, data):
@@ -266,13 +266,13 @@ class ParticleFilter:
         # based on the particles within the particle cloud, update the robot pose estimate
         
         # TODO
-
+        return
 
     
     def update_particle_weights_with_measurement_model(self, data):
 
         # TODO
-
+        return
 
         
 
@@ -282,7 +282,7 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-
+        return
 
 
 if __name__=="__main__":
