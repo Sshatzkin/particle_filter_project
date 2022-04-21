@@ -134,7 +134,7 @@ class ParticleFilter:
 
         for i in range(self.num_particles):
             # create a new particle
-            randPosition = Point(randrange(0, map_width) * resolution, randrange(0, map_height) * resolution, 0)
+            randPosition = Point(randrange(-map_width/8, map_width/4) * resolution, randrange(-map_height/8, map_height/4) * resolution, 0)
             randQuatvalues = quaternion_from_euler(0, 0, random() * 2 * math.pi)
 
             p = Particle(Pose(), 1.0)
@@ -146,7 +146,7 @@ class ParticleFilter:
 
         
         self.normalize_particles()
-        rospy.sleep(3)
+        rospy.sleep(1)
         self.publish_particle_cloud()
         #rospy.sleep(1)
         #self.publish_particle_cloud()
@@ -179,8 +179,8 @@ class ParticleFilter:
 
     
         for part in self.particle_cloud:
-            print(part.pose.position)
-            print(get_yaw_from_pose(part.pose))
+            #print(part.pose.position)
+            #print(get_yaw_from_pose(part.pose))
             #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
 
