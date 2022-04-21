@@ -108,6 +108,7 @@ class ParticleFilter:
         self.tf_listener = TransformListener()
         self.tf_broadcaster = TransformBroadcaster()
 
+        rospy.sleep(3)
 
         # intialize the particle cloud
         self.initialize_particle_cloud()
@@ -140,8 +141,9 @@ class ParticleFilter:
             # add the particle to the particle cloud
             self.particle_cloud.append(p)
 
-
+        rospy.sleep(3)
         self.normalize_particles()
+        
         self.publish_particle_cloud()
         rospy.sleep(1)
         self.publish_particle_cloud()
@@ -172,6 +174,7 @@ class ParticleFilter:
         particle_cloud_pose_array.header = Header(stamp=rospy.Time.now(), frame_id=self.map_topic)
         particle_cloud_pose_array.poses
 
+    
         for part in self.particle_cloud:
             print(part.pose.position)
             #print(quaterniontoeurler(part.post.orientation))
@@ -196,7 +199,25 @@ class ParticleFilter:
     def resample_particles(self):
 
         # TODO
-        return
+        #Replace all of our particles with a probability proportional to the importance weights we've previously calculated. 
+
+        new_particles = []
+        particles = []
+        weights = []
+        for i in range(self.num_particles):
+           particles.append([self.particle_cloud[i].position.x, 
+                             self.particle_cloud[i].position.y , 
+                             self.particle_cloud[i].position.z])
+
+           weights.append(self.particle_cloud[i].w)
+        
+        new_particles = random.choices(
+                population = particles,
+                weights = weights,
+                k = self.num_particles
+            )
+
+        return new_particles
 
 
     def robot_scan_received(self, data):
@@ -275,12 +296,39 @@ class ParticleFilter:
         # based on the particles within the particle cloud, update the robot pose estimate
         
         # TODO
+
+        
         return
 
     
     def update_particle_weights_with_measurement_model(self, data):
 
         # TODO
+        #Compare actual sensor readings w/ particle's "readings", and assign a weight based on difference
+
+        max_x = self.map.info.width * self.map.info.resolution
+        max_y = self.map.info.height * self.map.info.resolution
+
+
+
+        for i in self.num_particles:
+
+            #Need to fill in these particle locations TODO
+            particle_dist_x = max_x - self.particle_cloud[i].position.x 
+            particle_dist_y = None 
+            particle_dist_z = None
+
+            #Is laser_pose the right function to get sensor readings? CHECK
+            self.particle_cloud[i].w = np.abs(self.laser_pose.pose.position.x - particle_dist_x) 
+            +  np.abs(self.laser_pose.pose.position.y - particle_dist_y) 
+            +  np.abs(self.laser_pose.pose.position.z - particle_dist_z)
+
+            self.particle_cloud[i].w = np.reciprocal(self.particle_cloud[i].w)
+            
+                                    
+
+
+
         return
 
         
@@ -291,7 +339,30 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-        return
+
+        curr_x = self.odom_pose.pose.position.x
+        old_x = self.odom_pose_last_motion_update.pose.position.x
+        curr_y = self.odom_pose.pose.position.y
+        old_y = self.odom_pose_last_motion_update.pose.position.y
+        curr_yaw = get_yaw_from_pose(self.odom_pose.pose)
+        old_yaw = get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
+
+        #Might need to invert calculations for yaw or something? DOUBLE CHECK
+        delta_x = curr_x - old_x
+        delta_y = curr_y - old_y
+        delta_yaw = get_yaw_from_pose(self.odom_pose.pose) - get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
+
+
+        #Is our yaw in here z? DOUBLE CHECK
+        #Probably need to get it from Quaternion
+        for i in self.num_particles:
+            self.particle_cloud[i].position.x += delta_x
+            self.particle_cloud[i].position.y += delta_y
+            self.particle_cloud[i].position.z += delta_yaw
+
+
+
+        return 
 
 
 if __name__=="__main__":
