@@ -174,7 +174,7 @@ class ParticleFilter:
 
         for part in self.particle_cloud:
             print(part.pose.position)
-            print(quaterniontoeurler(part.post.orientation))
+            #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
 
         print("Publishing particle cloud of size: " + str(len(self.particle_cloud)))
