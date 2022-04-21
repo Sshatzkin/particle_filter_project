@@ -127,12 +127,13 @@ class ParticleFilter:
         # Get map width and height
         map_width = self.map.info.width
         map_height = self.map.info.height
+        resolution = self.map.info.resolution
         print("Map width: " + str(map_width))
         print("Map height: " + str(map_height))
 
         for i in range(self.num_particles):
             # create a new particle
-            randPosition = Point(randrange(0, map_width), randrange(0, map_height), 0)
+            randPosition = Point(randrange(0, map_width) * resolution, randrange(0, map_height) * resolution, 0)
             randQuat = quaternion_from_euler(0, 0, random() * 2 * math.pi)
             p = Particle(Pose(randPosition, randQuat), 1.0)
 
@@ -168,7 +169,7 @@ class ParticleFilter:
         particle_cloud_pose_array.poses
 
         for part in self.particle_cloud:
-            print(part.pose.position);
+            print(part.pose.position)
             print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
 
