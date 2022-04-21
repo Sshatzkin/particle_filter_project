@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from hashlib import new
 import rospy
 
 from nav_msgs.msg import OccupancyGrid
@@ -38,7 +39,11 @@ def draw_random_sample(items, weights, n):
     We recommend that you fill in this function using random_sample.
     """
     # TODO
-    return  random.choices(items, weights=weights, k=n)
+    new_poses = random.choices(items, weights=weights, k=n)
+    print(type(new_poses))
+    print(len(new_poses))
+    print(new_poses)
+    return  new_poses
 
 
 class Particle:
@@ -206,13 +211,11 @@ class ParticleFilter:
         #Replace all of our particles with a probability proportional to the importance weights we've previously calculated. 
 
         new_particles = []
-        poses = []
         weights = []
         for part in self.num_particles:
-           poses.append(part.pose)
            weights.append(part.w)
 
-        self.particle_cloud = draw_random_sample(poses, weights, self.num_particles)
+        self.particle_cloud = draw_random_sample(self.particle_cloud, weights, self.num_particles)
 
         return
 
