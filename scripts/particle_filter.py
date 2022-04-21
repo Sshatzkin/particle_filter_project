@@ -75,7 +75,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 1000 #10000
+        self.num_particles = 10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -135,21 +135,24 @@ class ParticleFilter:
         for i in range(self.num_particles):
             # create a new particle
             randPosition = Point(randrange(0, map_width) * resolution, randrange(0, map_height) * resolution, 0)
-            randQuat = quaternion_from_euler(0, 0, random() * 2 * math.pi)
-            p = Particle(Pose(randPosition, randQuat), 1.0)
+            randQuatvalues = quaternion_from_euler(0, 0, random() * 2 * math.pi)
+
+            p = Particle(Pose(), 1.0)
+            p.pose.position = randPosition
+            p.pose.orientation = Quaternion(randQuatvalues[0], randQuatvalues[1], randQuatvalues[2], randQuatvalues[3])
 
             # add the particle to the particle cloud
             self.particle_cloud.append(p)
 
-        rospy.sleep(3)
-        self.normalize_particles()
         
+        self.normalize_particles()
+        rospy.sleep(3)
         self.publish_particle_cloud()
-        rospy.sleep(1)
-        self.publish_particle_cloud()
-        rospy.sleep(1)
-        self.publish_particle_cloud()
-        self.publish_particle_cloud()
+        #rospy.sleep(1)
+        #self.publish_particle_cloud()
+        #rospy.sleep(1)
+        #self.publish_particle_cloud()
+        #self.publish_particle_cloud()
 
 
     def normalize_particles(self):
@@ -177,6 +180,7 @@ class ParticleFilter:
     
         for part in self.particle_cloud:
             print(part.pose.position)
+            print(get_yaw_from_pose(part.pose))
             #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
 
