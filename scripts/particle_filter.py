@@ -127,6 +127,8 @@ class ParticleFilter:
         # Get map width and height
         map_width = self.map.info.width
         map_height = self.map.info.height
+        print("Map width: " + str(map_width))
+        print("Map height: " + str(map_height))
 
         for i in range(self.num_particles):
             # create a new particle
