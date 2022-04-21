@@ -33,12 +33,12 @@ def get_yaw_from_pose(p):
     return yaw
 
 
-def draw_random_sample():
+def draw_random_sample(items, weights, n):
     """ Draws a random sample of n elements from a given list of choices and their specified probabilities.
     We recommend that you fill in this function using random_sample.
     """
     # TODO
-    return
+    return  random.choices(items, weights=weights, k=n)
 
 
 class Particle:
@@ -206,22 +206,15 @@ class ParticleFilter:
         #Replace all of our particles with a probability proportional to the importance weights we've previously calculated. 
 
         new_particles = []
-        particles = []
+        poses = []
         weights = []
-        for i in range(self.num_particles):
-           particles.append([self.particle_cloud[i].position.x, 
-                             self.particle_cloud[i].position.y , 
-                             self.particle_cloud[i].position.z])
+        for part in self.num_particles:
+           poses.append(part.pose)
+           weights.append(part.w)
 
-           weights.append(self.particle_cloud[i].w)
-        
-        new_particles = random.choices(
-                population = particles,
-                weights = weights,
-                k = self.num_particles
-            )
+        self.particle_cloud = draw_random_sample(poses, weights, self.num_particles)
 
-        return new_particles
+        return
 
 
     def robot_scan_received(self, data):
