@@ -75,7 +75,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 1000 #10000
+        self.num_particles = 10 #10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -168,6 +168,8 @@ class ParticleFilter:
         particle_cloud_pose_array.poses
 
         for part in self.particle_cloud:
+            print(part.pose.position);
+            print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
 
         print("Publishing particle cloud of size: " + str(len(self.particle_cloud)))
@@ -183,7 +185,7 @@ class ParticleFilter:
         robot_pose_estimate_stamped.pose = self.robot_estimate
         robot_pose_estimate_stamped.header = Header(stamp=rospy.Time.now(), frame_id=self.map_topic)
         self.robot_estimate_pub.publish(robot_pose_estimate_stamped)
-
+        print("Robot Estimate:",robot_estimate.position);
 
 
     def resample_particles(self):
