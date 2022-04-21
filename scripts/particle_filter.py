@@ -160,8 +160,6 @@ class ParticleFilter:
         for i in range(self.num_particles):
             check_total += self.particle_cloud[i].w
 
-        print(check_total)
-
 
     def publish_particle_cloud(self):
 
@@ -171,6 +169,8 @@ class ParticleFilter:
 
         for part in self.particle_cloud:
             particle_cloud_pose_array.poses.append(part.pose)
+
+        print("Publishing particle cloud of size: " + str(len(self.particle_cloud)))
 
         self.particles_pub.publish(particle_cloud_pose_array)
 
