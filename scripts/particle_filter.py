@@ -16,7 +16,7 @@ import numpy as np
 from numpy.random import random_sample
 import math
 
-from random import randint, random
+from random import randint, random, randrange
 
 
 
@@ -75,7 +75,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 10000
+        self.num_particles = 20 #10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -122,8 +122,20 @@ class ParticleFilter:
     
 
     def initialize_particle_cloud(self):
-        
         # TODO
+
+        # Get map width and height
+        map_width = self.map.info.width
+        map_height = self.map.info.height
+
+        for i in range(self.num_particles):
+            # create a new particle
+            randPosition = Point(randrange(0, map_width), randrange(0, map_height), 0)
+            randQuat = quaternion_from_euler(0, 0, random() * 2 * math.pi)
+            p = Particle(Pose(randPosition, randQuat), 1.0)
+
+            # add the particle to the particle cloud
+            self.particle_cloud.append(p)
 
 
         self.normalize_particles()
@@ -132,10 +144,21 @@ class ParticleFilter:
 
 
     def normalize_particles(self):
-        # make all the particle weights sum to 1.0
-        
         # TODO
+        # make all the particle weights sum to 1.0
 
+        total_weight = 0
+        for i in range(self.num_particles):
+            total_weight += self.particle_cloud[i].w
+
+        for i in range(self.num_particles):
+            self.particle_cloud[i].w /= total_weight
+
+        check_total = 0
+        for i in range(self.num_particles):
+            check_total += self.particle_cloud[i].w
+
+        print(check_total)
 
 
     def publish_particle_cloud(self):
@@ -164,7 +187,7 @@ class ParticleFilter:
     def resample_particles(self):
 
         # TODO
-
+        return
 
 
     def robot_scan_received(self, data):
@@ -243,13 +266,13 @@ class ParticleFilter:
         # based on the particles within the particle cloud, update the robot pose estimate
         
         # TODO
-
+        return
 
     
     def update_particle_weights_with_measurement_model(self, data):
 
         # TODO
-
+        return
 
         
 
@@ -259,7 +282,7 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-
+        return
 
 
 if __name__=="__main__":
