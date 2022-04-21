@@ -142,7 +142,11 @@ class ParticleFilter:
 
 
         self.normalize_particles()
-
+        self.publish_particle_cloud()
+        rospy.sleep(1)
+        self.publish_particle_cloud()
+        rospy.sleep(1)
+        self.publish_particle_cloud()
         self.publish_particle_cloud()
 
 
