@@ -17,7 +17,7 @@ import numpy as np
 from numpy.random import random_sample
 import math
 
-from random import randint, random, randrange, choices
+from random import randint, random, randrange, choices, uniform
 
 
 
@@ -213,8 +213,8 @@ class ParticleFilter:
         noisy_particles = []
         for particle in new_sample:
             # add noise to the particle
-            randPosition = Point(randrange(-0.1, 0.1) + particle.pose.position.x, randrange(-0.1, 0.1) + particle.pose.position.y, 0)
-            randomYaw = randrange(-0.1, 0.1) * 2 *math.pi
+            randPosition = Point(uniform(-0.1, 0.1) + particle.pose.position.x, uniform(-0.1, 0.1) + particle.pose.position.y, 0)
+            randomYaw = uniform(-0.1, -1) * 2 *math.pi
             randQuatValues = quaternion_from_euler(0, 0, randomYaw)
 
             p = Particle(Pose(), 1.0)
