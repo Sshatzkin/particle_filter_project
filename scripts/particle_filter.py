@@ -194,7 +194,7 @@ class ParticleFilter:
         robot_pose_estimate_stamped.pose = self.robot_estimate
         robot_pose_estimate_stamped.header = Header(stamp=rospy.Time.now(), frame_id=self.map_topic)
         self.robot_estimate_pub.publish(robot_pose_estimate_stamped)
-        print("Robot Estimate:",robot_estimate.position);
+        print("Robot Estimate:",self.robot_estimate.position)
 
 
     def resample_particles(self):
@@ -207,8 +207,26 @@ class ParticleFilter:
         for part in self.particle_cloud:
            weights.append(part.w)
 
-        self.particle_cloud = draw_random_sample(self.particle_cloud, weights, self.num_particles)
+        new_sample = draw_random_sample(self.particle_cloud, weights, self.num_particles)
 
+        # Now, we add noise to the particles from this new sample
+        noisy_particles = []
+        for particle in new_sample:
+            # add noise to the particle
+            randPosition = Point(randrange(-0.1, 0.1) + particle.pose.position.x, randrange(-0.1, 0.1) + particle.pose.position.y, 0)
+            randomYaw = randrange(-0.1, 0.1) * 2 *math.pi
+            randQuatValues = quaternion_from_euler(0, 0, randomYaw)
+
+            p = Particle(Pose(), 1.0)
+            p.pose.position = randPosition
+            p.pose.orientation = Quaternion(randQuatValues[0], randQuatValues[1], randQuatValues[2], randQuatValues[3])
+            p.w = particle.w
+
+            # add the particle to the particle cloud
+            noisy_particles.append(p)
+        
+        
+        self.particle_cloud = noisy_particles
         return
 
 
