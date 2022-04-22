@@ -124,7 +124,7 @@ class ParticleFilter:
     
 
     def initialize_particle_cloud(self):
-        # TODO
+        # DONE
 
         # Get map width and height
         map_width = self.map.info.width
@@ -149,15 +149,10 @@ class ParticleFilter:
         self.normalize_particles()
         rospy.sleep(1)
         self.publish_particle_cloud()
-        #rospy.sleep(1)
-        #self.publish_particle_cloud()
-        #rospy.sleep(1)
-        #self.publish_particle_cloud()
-        #self.publish_particle_cloud()
 
 
     def normalize_particles(self):
-        # TODO
+        # DONE
         # make all the particle weights sum to 1.0
 
         total_weight = 0
@@ -170,6 +165,7 @@ class ParticleFilter:
         check_total = 0
         for i in range(self.num_particles):
             check_total += self.particle_cloud[i].w
+        print("Check Total: " + str(check_total))
 
 
     def publish_particle_cloud(self):
@@ -203,7 +199,7 @@ class ParticleFilter:
 
     def resample_particles(self):
 
-        # TODO
+        # DONE
         #Replace all of our particles with a probability proportional to the importance weights we've previously calculated. 
 
         new_particles = []
@@ -302,8 +298,8 @@ class ParticleFilter:
         # TODO
         #Compare actual sensor readings w/ particle's "readings", and assign a weight based on difference
 
-        max_x = self.map.info.width * self.map.info.resolution
-        max_y = self.map.info.height * self.map.info.resolution
+        #max_x = self.map.info.width * self.map.info.resolution
+        #max_y = self.map.info.height * self.map.info.resolution
 
         """
         for i in range(self.num_particles):
@@ -334,13 +330,14 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-        
+        """
         curr_x = self.odom_pose.pose.position.x
         old_x = self.odom_pose_last_motion_update.pose.position.x
         curr_y = self.odom_pose.pose.position.y
         old_y = self.odom_pose_last_motion_update.pose.position.y
         curr_yaw = get_yaw_from_pose(self.odom_pose.pose)
         old_yaw = get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
+        """
         """
         #Might need to invert calculations for yaw or something? DOUBLE CHECK
         delta_x = curr_x - old_x
