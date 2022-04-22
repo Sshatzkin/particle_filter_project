@@ -76,7 +76,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 10000
+        self.num_particles = 10
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -160,7 +160,7 @@ class ParticleFilter:
             total_weight += self.particle_cloud[i].w
         print("Total Weight (Pre-norm): " + str(total_weight))
         for i in range(self.num_particles):
-            self.particle_cloud[i].w /= total_weight
+            self.particle_cloud[i].w = self.particle_cloud[i].w / total_weight
 
         check_total = 0
         for i in range(self.num_particles):
@@ -176,7 +176,7 @@ class ParticleFilter:
 
     
         for part in self.particle_cloud:
-            #print(part.pose.position)
+            print(part.pose.position)
             #print(get_yaw_from_pose(part.pose))
             #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
@@ -251,7 +251,7 @@ class ParticleFilter:
 
 
         if self.particle_cloud:
-
+            print("Recieved scan and particle cloud active")
             # check to see if we've moved far enough to perform an update
 
             curr_x = self.odom_pose.pose.position.x
@@ -266,7 +266,7 @@ class ParticleFilter:
                 np.abs(curr_yaw - old_yaw) > self.ang_mvmt_threshold):
 
                 # This is where the main logic of the particle filter is carried out
-
+                print("Movement Threshold reached")
                 self.update_particles_with_motion_model()
 
                 self.update_particle_weights_with_measurement_model(data)
