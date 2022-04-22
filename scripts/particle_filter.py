@@ -303,7 +303,7 @@ class ParticleFilter:
 
 
     def update_estimated_robot_pose(self):
-        # TODO
+        # DONE
         # based on the particles within the particle cloud, update the robot pose estimate
         average_point = Point(0,0,0)
         average_yaw = 0
