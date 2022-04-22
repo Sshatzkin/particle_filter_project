@@ -17,7 +17,7 @@ import numpy as np
 from numpy.random import random_sample
 import math
 
-from random import randint, random, randrange
+from random import randint, random, randrange, choices
 
 
 
@@ -39,11 +39,7 @@ def draw_random_sample(items, weights, n):
     We recommend that you fill in this function using random_sample.
     """
     # TODO
-    new_poses = random.choices(items, weights=weights, k=n)
-    print(type(new_poses))
-    print(len(new_poses))
-    print(new_poses)
-    return  new_poses
+    return choices(items, weights=weights, k=n)
 
 
 class Particle:
@@ -167,7 +163,7 @@ class ParticleFilter:
         total_weight = 0
         for i in range(self.num_particles):
             total_weight += self.particle_cloud[i].w
-
+        print("Total Weight (Pre-norm): " + str(total_weight))
         for i in range(self.num_particles):
             self.particle_cloud[i].w /= total_weight
 
@@ -212,7 +208,7 @@ class ParticleFilter:
 
         new_particles = []
         weights = []
-        for part in self.num_particles:
+        for part in self.particle_cloud:
            weights.append(part.w)
 
         self.particle_cloud = draw_random_sample(self.particle_cloud, weights, self.num_particles)
@@ -309,9 +305,8 @@ class ParticleFilter:
         max_x = self.map.info.width * self.map.info.resolution
         max_y = self.map.info.height * self.map.info.resolution
 
-
-
-        for i in self.num_particles:
+        """
+        for i in range(self.num_particles):
 
             #Need to fill in these particle locations TODO
             particle_dist_x = max_x - self.particle_cloud[i].position.x 
@@ -326,7 +321,7 @@ class ParticleFilter:
             self.particle_cloud[i].w = np.reciprocal(self.particle_cloud[i].w)
             
                                     
-
+        """
 
 
         return
@@ -339,14 +334,14 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-
+        
         curr_x = self.odom_pose.pose.position.x
         old_x = self.odom_pose_last_motion_update.pose.position.x
         curr_y = self.odom_pose.pose.position.y
         old_y = self.odom_pose_last_motion_update.pose.position.y
         curr_yaw = get_yaw_from_pose(self.odom_pose.pose)
         old_yaw = get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
-
+        """
         #Might need to invert calculations for yaw or something? DOUBLE CHECK
         delta_x = curr_x - old_x
         delta_y = curr_y - old_y
@@ -355,13 +350,13 @@ class ParticleFilter:
 
         #Is our yaw in here z? DOUBLE CHECK
         #Probably need to get it from Quaternion
-        for i in self.num_particles:
+        for i in range(self.num_particles):
             self.particle_cloud[i].position.x += delta_x
             self.particle_cloud[i].position.y += delta_y
             self.particle_cloud[i].position.z += delta_yaw
 
 
-
+        """
         return 
 
 
