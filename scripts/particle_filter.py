@@ -38,7 +38,7 @@ def draw_random_sample(items, weights, n):
     """ Draws a random sample of n elements from a given list of choices and their specified probabilities.
     We recommend that you fill in this function using random_sample.
     """
-    # TODO
+    # DONE
     return choices(items, weights=weights, k=n)
 
 
@@ -303,11 +303,22 @@ class ParticleFilter:
 
 
     def update_estimated_robot_pose(self):
-        # based on the particles within the particle cloud, update the robot pose estimate
-        
         # TODO
+        # based on the particles within the particle cloud, update the robot pose estimate
+        average_point = Point(0,0,0)
+        average_yaw = 0
+        for part in self.particle_cloud:
+            average_point.x += part.pose.position.x
+            average_point.y += part.pose.position.y
+            average_yaw += get_yaw_from_pose(part.pose)
+        average_point.x /= len(self.particle_cloud)
+        average_point.y /= len(self.particle_cloud)
+        average_yaw /= len(self.particle_cloud)
 
-        
+        print("Estimated Robot Pose:",average_point, " Yaw: ", average_yaw)   
+        self.robot_estimate.position = average_point
+        quatVals = quaternion_from_euler(0, 0, average_yaw)
+        self.robot_estimate.orientation = Quaternion(quatVals[0], quatVals[1], quatVals[2], quatVals[3])
         return
 
     
@@ -322,7 +333,7 @@ class ParticleFilter:
         """
         for i in range(self.num_particles):
 
-            #Need to fill in these particle locations TODO
+            #Need to fill in these particle locations
             particle_dist_x = max_x - self.particle_cloud[i].position.x 
             particle_dist_y = None 
             particle_dist_z = None
