@@ -19,6 +19,7 @@ import math
 
 from random import randint, random, randrange, choices, uniform
 
+from likelihood_field import LikelihoodField
 
 
 def get_yaw_from_pose(p):
@@ -40,6 +41,13 @@ def draw_random_sample(items, weights, n):
     """
     # DONE
     return choices(items, weights=weights, k=n)
+
+def compute_prob_zero_centered_gaussian(dist, sd):
+    """ Takes in distance from zero (dist) and standard deviation (sd) for gaussian
+        and returns probability (likelihood) of observation """
+    c = 1.0 / (sd * math.sqrt(2 * math.pi))
+    prob = c * math.exp((-math.pow(dist,2))/(2 * math.pow(sd, 2)))
+    return prob
 
 
 class Particle:
@@ -111,8 +119,13 @@ class ParticleFilter:
 
         rospy.sleep(3)
 
+        # Initialize the likelihood field
+        self.likelihood_field = LikelihoodField()
+
         # intialize the particle cloud
         self.initialize_particle_cloud()
+
+       
 
         self.initialized = True
 
@@ -330,23 +343,30 @@ class ParticleFilter:
         #max_x = self.map.info.width * self.map.info.resolution
         #max_y = self.map.info.height * self.map.info.resolution
 
-        """
-        for i in range(self.num_particles):
+        directions = [0, 90, 180, 270]
 
-            #Need to fill in these particle locations
-            particle_dist_x = max_x - self.particle_cloud[i].position.x 
-            particle_dist_y = None 
-            particle_dist_z = None
+        weights = []
+        for i, part in enumerate(self.particle_cloud):
+            x = part.pose.position.x
+            y = part.pose.position.y
+            yaw  = (euler_from_quaternion([part.pose.orientation.x, part.pose.orientation.y, part.pose.orientation.z, part.pose.orientation.w])[2])
+            print("Particle x:", x," y:", y," yaw:", yaw)
+            q = 1
+            for i, direction in enumerate(directions):
+              reading = data.ranges[direction]
+              if (reading != 0):# and reading < 3.5):
+                    if (reading > 3.5):
+                        reading = 3.5
+                    x_proj = x + reading * math.cos(yaw + math.radians(direction))
+                    y_proj = y + reading * math.sin(yaw + math.radians(direction))
 
-            #Is laser_pose the right function to get sensor readings? CHECK
-            self.particle_cloud[i].w = np.abs(self.laser_pose.pose.position.x - particle_dist_x) 
-            +  np.abs(self.laser_pose.pose.position.y - particle_dist_y) 
-            +  np.abs(self.laser_pose.pose.position.z - particle_dist_z)
+                    dist = self.likelihood_field.get_closest_obstacle_distance(x_proj, y_proj)
 
-            self.particle_cloud[i].w = np.reciprocal(self.particle_cloud[i].w)
-            
-                                    
-        """
+                    q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
+                    print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
+            part.weight = q
+            weights.append(q)
+        print("Weights:", weights)
 
 
         return
