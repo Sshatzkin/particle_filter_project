@@ -84,7 +84,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 10
+        self.num_particles = 1000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -148,7 +148,7 @@ class ParticleFilter:
 
         for i in range(self.num_particles):
             # create a new particle
-            randPosition = Point(randrange(-map_width/8, map_width/4) * resolution, randrange(-map_height/8, map_height/4) * resolution, 0)
+            randPosition = Point(randrange(-10, 55) * resolution, randrange(-25, 50) * resolution, 0)
             randQuatvalues = quaternion_from_euler(0, 0, random() * 2 * math.pi)
 
             p = Particle(Pose(), 1.0)
@@ -189,7 +189,7 @@ class ParticleFilter:
 
     
         for part in self.particle_cloud:
-            print(part.pose.position)
+            #print(part.pose.position)
             #print(get_yaw_from_pose(part.pose))
             #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
@@ -226,8 +226,8 @@ class ParticleFilter:
         noisy_particles = []
         for particle in new_sample:
             # add noise to the particle
-            randPosition = Point(uniform(-0.1, 0.1) + particle.pose.position.x, uniform(-0.1, 0.1) + particle.pose.position.y, 0)
-            randomYaw = uniform(-0.1, -1) * 2 *math.pi
+            randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
+            randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)
             randQuatValues = quaternion_from_euler(0, 0, randomYaw)
 
             p = Particle(Pose(), 1.0)
@@ -282,7 +282,7 @@ class ParticleFilter:
 
 
         if self.particle_cloud:
-            print("Recieved scan and particle cloud active")
+            #print("Recieved scan and particle cloud active")
             # check to see if we've moved far enough to perform an update
 
             curr_x = self.odom_pose.pose.position.x
@@ -343,14 +343,14 @@ class ParticleFilter:
         #max_x = self.map.info.width * self.map.info.resolution
         #max_y = self.map.info.height * self.map.info.resolution
 
-        directions = [0, 90, 180, 270]
+        directions = [0, 45, 90, 135, 180, 225, 270, 315]
 
         weights = []
         for i, part in enumerate(self.particle_cloud):
             x = part.pose.position.x
             y = part.pose.position.y
             yaw  = (euler_from_quaternion([part.pose.orientation.x, part.pose.orientation.y, part.pose.orientation.z, part.pose.orientation.w])[2])
-            print("Particle x:", x," y:", y," yaw:", yaw)
+            #print("Particle x:", x," y:", y," yaw:", yaw)
             q = 1
             for i, direction in enumerate(directions):
               reading = data.ranges[direction]
@@ -363,10 +363,10 @@ class ParticleFilter:
                     dist = self.likelihood_field.get_closest_obstacle_distance(x_proj, y_proj)
 
                     q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
-                    print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
+                    #print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
             part.weight = q
             weights.append(q)
-        print("Weights:", weights)
+        #print("Weights:", weights)
 
 
         return
