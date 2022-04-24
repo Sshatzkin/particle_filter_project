@@ -397,7 +397,7 @@ class ParticleFilter:
 
                     q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
                     print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
-            part.weight = q
+            part.w = q
             weights.append(q)
         print("Weights:", weights)
 
