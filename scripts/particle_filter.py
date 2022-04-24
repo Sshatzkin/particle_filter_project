@@ -51,14 +51,14 @@ def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
             particle.pose.position.y = particle.pose.position.y + translation * math.sin(old_part_yaw + rotation_1)
             quat = quaternion_from_euler(0, 0, old_part_yaw + rotation_1 + rotation_2)
             particle.pose.orientation = Quaternion(quat[0], quat[1], quat[2], quat[3])
-            
+            print("Pre noise:" , particle.pose.position.x, particle.pose.position.y)
             randPosition = Point(uniform(-0.1, 0.1) + particle.pose.position.x, uniform(-0.1, 0.1) + particle.pose.position.y, 0)
             randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)   
             randQuatValues = quaternion_from_euler(0, 0, randomYaw)
-
+            
             particle.pose.position = randPosition
             particle.pose.orientation = Quaternion(randQuatValues[0],randQuatValues[1], randQuatValues[2], randQuatValues[3] )
-
+            print("Post Noise:", particle.pose.position.x, particle.pose.position.y)
 
         return
 
