@@ -200,13 +200,16 @@ class ParticleFilter:
         for i in range(self.num_particles):
             total_weight += self.particle_cloud[i].w
         print("Total Weight (Pre-norm): " + str(total_weight))
+        normal_weights = []
         for i in range(self.num_particles):
             self.particle_cloud[i].w = self.particle_cloud[i].w / total_weight
+            normal_weights.append(self.particle_cloud[i].w)
 
         check_total = 0
         for i in range(self.num_particles):
             check_total += self.particle_cloud[i].w
         print("Check Total: " + str(check_total))
+        print("Normal Weights: ", normal_weights)
 
 
     def publish_particle_cloud(self):
