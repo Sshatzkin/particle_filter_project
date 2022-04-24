@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from hashlib import new
+from ssl import ALERT_DESCRIPTION_ILLEGAL_PARAMETER
 import rospy
 
 from nav_msgs.msg import OccupancyGrid
@@ -351,6 +352,21 @@ class ParticleFilter:
 
         return
 
+    def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
+        
+        
+        rotation_1 = math.atan2(delta_y, delta_x) - old_yaw
+
+        translation = math.sqrt( (delta_x * delta_x) + (delta_y * delta_y) )
+
+        rotation_2 = curr_yaw - old_yaw - rotation_1  
+
+
+       # self.particle_cloud[0].position. 
+
+
+        return
+
         
 
     def update_particles_with_motion_model(self):
@@ -359,21 +375,29 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-        """
+
+
+        
         curr_x = self.odom_pose.pose.position.x
         old_x = self.odom_pose_last_motion_update.pose.position.x
+        
         curr_y = self.odom_pose.pose.position.y
         old_y = self.odom_pose_last_motion_update.pose.position.y
+        
         curr_yaw = get_yaw_from_pose(self.odom_pose.pose)
         old_yaw = get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
-        """
-        """
+        
+        
         #Might need to invert calculations for yaw or something? DOUBLE CHECK
         delta_x = curr_x - old_x
         delta_y = curr_y - old_y
-        delta_yaw = get_yaw_from_pose(self.odom_pose.pose) - get_yaw_from_pose(self.odom_pose_last_motion_update.pose)
+        
+
+        movement_model(self, delta_x, delta_y, curr_yaw, old_yaw)
 
 
+        
+        """
         #Is our yaw in here z? DOUBLE CHECK
         #Probably need to get it from Quaternion
         for i in range(self.num_particles):
