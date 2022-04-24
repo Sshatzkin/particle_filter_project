@@ -52,8 +52,8 @@ def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
             quat = quaternion_from_euler(0, 0, old_part_yaw + rotation_1 + rotation_2)
             particle.pose.orientation = Quaternion(quat[0], quat[1], quat[2], quat[3])
             
-            randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
-            randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)   
+            randPosition = Point(uniform(-0.01, 0.01) + particle.pose.position.x, uniform(-0.01, 0.01) + particle.pose.position.y, 0)
+            randomYaw = uniform(-0.05, 0.05) * 2 *math.pi + get_yaw_from_pose(particle.pose)   
             randQuatValues = quaternion_from_euler(0, 0, randomYaw)
 
             particle.pose.position = randPosition
