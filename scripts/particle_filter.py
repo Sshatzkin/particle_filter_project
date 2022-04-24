@@ -112,7 +112,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 20
+        self.num_particles = 10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -201,7 +201,7 @@ class ParticleFilter:
             total_weight += self.particle_cloud[i].w
             initial_weights.append(self.particle_cloud[i].w)
         print("Total Weight (Pre-norm): " + str(total_weight))
-        print("Initial weights: ", initial_weights)
+        #print("Initial weights: ", initial_weights)
         normal_weights = []
         for i in range(self.num_particles):
             self.particle_cloud[i].w = self.particle_cloud[i].w / total_weight
@@ -211,7 +211,7 @@ class ParticleFilter:
         for i in range(self.num_particles):
             check_total += self.particle_cloud[i].w
         print("Check Total: " + str(check_total))
-        print("Normal Weights: ", normal_weights)
+        #print("Normal Weights: ", normal_weights)
 
 
     def publish_particle_cloud(self):
@@ -382,8 +382,8 @@ class ParticleFilter:
             x = part.pose.position.x
             y = part.pose.position.y
             yaw  = (euler_from_quaternion([part.pose.orientation.x, part.pose.orientation.y, part.pose.orientation.z, part.pose.orientation.w])[2])
-            print()
-            print("Particle x:", x," y:", y," yaw:", yaw)
+            #print()
+            #print("Particle x:", x," y:", y," yaw:", yaw)
             q = 1
             for i, direction in enumerate(directions):
               reading = data.ranges[direction]
@@ -396,10 +396,10 @@ class ParticleFilter:
                     dist = self.likelihood_field.get_closest_obstacle_distance(x_proj, y_proj)
 
                     q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
-                    print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
+                    #print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
             part.w = q
             weights.append(q)
-        print("Weights:", weights)
+        #print("Weights:", weights)
 
 
         return
