@@ -378,7 +378,8 @@ class ParticleFilter:
             x = part.pose.position.x
             y = part.pose.position.y
             yaw  = (euler_from_quaternion([part.pose.orientation.x, part.pose.orientation.y, part.pose.orientation.z, part.pose.orientation.w])[2])
-            #print("Particle x:", x," y:", y," yaw:", yaw)
+            print()
+            print("Particle x:", x," y:", y," yaw:", yaw)
             q = 1
             for i, direction in enumerate(directions):
               reading = data.ranges[direction]
