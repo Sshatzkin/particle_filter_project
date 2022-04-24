@@ -195,11 +195,13 @@ class ParticleFilter:
     def normalize_particles(self):
         # DONE
         # make all the particle weights sum to 1.0
-
         total_weight = 0
+        initial_weights = []
         for i in range(self.num_particles):
             total_weight += self.particle_cloud[i].w
+            initial_weights.append(self.particle_cloud[i].w)
         print("Total Weight (Pre-norm): " + str(total_weight))
+        print("Initial weights: ", initial_weights)
         normal_weights = []
         for i in range(self.num_particles):
             self.particle_cloud[i].w = self.particle_cloud[i].w / total_weight
