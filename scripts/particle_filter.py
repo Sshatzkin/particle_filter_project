@@ -222,7 +222,7 @@ class ParticleFilter:
 
     
         for part in self.particle_cloud:
-            #print(part.pose.position)
+            print(part.pose.position)
             #print(get_yaw_from_pose(part.pose))
             #print(quaterniontoeurler(part.post.orientation))
             particle_cloud_pose_array.poses.append(part.pose)
