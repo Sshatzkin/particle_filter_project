@@ -35,6 +35,33 @@ def get_yaw_from_pose(p):
 
     return yaw
 
+def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
+        
+        
+        rotation_1 = math.atan2(delta_y, delta_x) - old_yaw
+
+        translation = math.sqrt( (delta_x * delta_x) + (delta_y * delta_y) )
+
+        rotation_2 = curr_yaw - old_yaw - rotation_1  
+
+
+        for particle in self.particle_cloud:
+            
+            particle.pose.position.x = particle.position.x + translation * math.cos(old_yaw + rotation_1)
+            particle.pose.position.y = particle.position.y + translation * math.sin(old_yaw + rotation_1)
+            quat = quaternion_from_euler(0, 0, old_yaw + rotation_1 + rotation_2)
+            particle.pose.orientation = Quaternion(quat[0], quat[1], quat[2], quat[3])
+            
+            randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
+            randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)   
+            randQuatValues = quaternion_from_euler(0, 0, randomYaw)
+
+            particle.pose.position = randPosition
+            particle.pose.orientation = Quaternion(randQuatValues[0],randQuatValues[1], randQuatValues[2], randQuatValues[3] )
+
+
+        return
+
 
 def draw_random_sample(items, weights, n):
     """ Draws a random sample of n elements from a given list of choices and their specified probabilities.
@@ -227,13 +254,13 @@ class ParticleFilter:
         noisy_particles = []
         for particle in new_sample:
             # add noise to the particle
-            randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
-            randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)
-            randQuatValues = quaternion_from_euler(0, 0, randomYaw)
+            #randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
+            #randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)
+            #randQuatValues = quaternion_from_euler(0, 0, randomYaw)
 
             p = Particle(Pose(), 1.0)
-            p.pose.position = randPosition
-            p.pose.orientation = Quaternion(randQuatValues[0], randQuatValues[1], randQuatValues[2], randQuatValues[3])
+            p.pose.position = particle.pose.position
+            p.pose.orientation = particle.pose.orientation
             p.w = particle.w
 
             # add the particle to the particle cloud
@@ -372,22 +399,7 @@ class ParticleFilter:
 
         return
 
-    def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
-        
-        
-        rotation_1 = math.atan2(delta_y, delta_x) - old_yaw
-
-        translation = math.sqrt( (delta_x * delta_x) + (delta_y * delta_y) )
-
-        rotation_2 = curr_yaw - old_yaw - rotation_1  
-
-
-       # self.particle_cloud[0].position. 
-
-
-        return
-
-        
+           
 
     def update_particles_with_motion_model(self):
 
@@ -395,9 +407,7 @@ class ParticleFilter:
         # all of the particles correspondingly
 
         # TODO
-
-
-        
+                        
         curr_x = self.odom_pose.pose.position.x
         old_x = self.odom_pose_last_motion_update.pose.position.x
         
@@ -411,22 +421,11 @@ class ParticleFilter:
         #Might need to invert calculations for yaw or something? DOUBLE CHECK
         delta_x = curr_x - old_x
         delta_y = curr_y - old_y
-        
+
 
         movement_model(self, delta_x, delta_y, curr_yaw, old_yaw)
 
 
-        
-        """
-        #Is our yaw in here z? DOUBLE CHECK
-        #Probably need to get it from Quaternion
-        for i in range(self.num_particles):
-            self.particle_cloud[i].position.x += delta_x
-            self.particle_cloud[i].position.y += delta_y
-            self.particle_cloud[i].position.z += delta_yaw
-
-
-        """
         return 
 
 
