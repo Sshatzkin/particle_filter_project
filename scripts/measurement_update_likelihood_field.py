@@ -143,17 +143,21 @@ class LikelihoodFieldMeasurementUpdate(object):
             yaw  = (euler_from_quaternion([part.pose.orientation.x, part.pose.orientation.y, part.pose.orientation.z, part.pose.orientation.w])[2])
             print("Particle x:", x," y:", y," yaw:", yaw)
             q = 1
+            print("Index | Val | Loc | Dist | Prob ") 
             for i, direction in enumerate(cardinal_directions_idxs):
                 reading = data.ranges[direction]
-                print("Direction: ", direction)
-                if (reading != 0 and reading < 3.5):
-                    x_proj = x + data.ranges[direction] * math.cos(yaw)
-                    y_proj = y + data.ranges[direction] * math.sin(yaw)
-                    print("Projected Point:",x_proj, y_proj)
+                #print("Direction: ", direction)
+                if (reading != 0):# and reading < 3.5):
+                    if (reading > 3.5):
+                        reading = 3.5
+                    x_proj = x + reading * math.cos(yaw + math.radians(direction))
+                    y_proj = y + reading * math.sin(yaw + math.radians(direction))
+                    #print("Projected Point:",x_proj, y_proj)
                     dist = self.likelihood_field.get_closest_obstacle_distance(x_proj, y_proj)
-                    print("Dist: ", dist)
+                    #print("Dist: ", dist)
                     q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
-                    print("Q: ", q)
+                    #print("Q: ", q)
+                    print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
             weights.append(q)
         print("Weights:", weights)
 
