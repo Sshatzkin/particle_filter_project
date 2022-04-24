@@ -112,7 +112,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 10000
+        self.num_particles = 10
 
         # initialize the particle cloud array
         self.particle_cloud = []
@@ -391,10 +391,10 @@ class ParticleFilter:
                     dist = self.likelihood_field.get_closest_obstacle_distance(x_proj, y_proj)
 
                     q = q * compute_prob_zero_centered_gaussian(dist, 0.1)
-                    #print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
+                    print(str(direction) + " | " + "{:.3f}".format(reading) + " | [" + "{:.3f}".format(x_proj) + "," + "{:.3f}".format(y_proj) + "] | "  + "{:.3f}".format(dist) + " | " + str(compute_prob_zero_centered_gaussian(dist, 0.1))) 
             part.weight = q
             weights.append(q)
-        #print("Weights:", weights)
+        print("Weights:", weights)
 
 
         return
