@@ -259,19 +259,20 @@ class ParticleFilter:
         noisy_particles = []
         for particle in new_sample:
             # add noise to the particle
-            #randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
-            #randomYaw = uniform(-0.1, 0.1) * 2 *math.pi + get_yaw_from_pose(particle.pose)
-            #randQuatValues = quaternion_from_euler(0, 0, randomYaw)
+            randPosition = Point(uniform(-0.05, 0.05) + particle.pose.position.x, uniform(-0.05, 0.05) + particle.pose.position.y, 0)
+            randomYaw = uniform(-0.05, 0.05) * 2 *math.pi + get_yaw_from_pose(particle.pose)
+            randQuatValues = quaternion_from_euler(0, 0, randomYaw)
 
             p = Particle(Pose(), particle.w)
-            p.pose.position = particle.pose.position
-            p.pose.orientation = particle.pose.orientation
+            p.pose.position = randPosition#particle.pose.position
+            p.pose.orientation = Quaternion(randQuatValues[0], randQuatValues[1], randQuatValues[2], randQuatValues[3]) 
+             #particle.pose.orientation
 
             # add the particle to the particle cloud
             noisy_particles.append(p)
         
         
-        self.particle_cloud = new_sample#noisy_particles
+        self.particle_cloud = noisy_particles
         return
 
 
