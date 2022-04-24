@@ -47,8 +47,8 @@ def movement_model(self, delta_x, delta_y, curr_yaw, old_yaw):
 
         for particle in self.particle_cloud:
             old_part_yaw = get_yaw_from_pose(particle.pose)
-            particle.pose.position.x = particle.position.x + translation * math.cos(old_part_yaw + rotation_1)
-            particle.pose.position.y = particle.position.y + translation * math.sin(old_part_yaw + rotation_1)
+            particle.pose.position.x = particle.pose.position.x + translation * math.cos(old_part_yaw + rotation_1)
+            particle.pose.position.y = particle.pose.position.y + translation * math.sin(old_part_yaw + rotation_1)
             quat = quaternion_from_euler(0, 0, old_part_yaw + rotation_1 + rotation_2)
             particle.pose.orientation = Quaternion(quat[0], quat[1], quat[2], quat[3])
             
@@ -112,7 +112,7 @@ class ParticleFilter:
         self.map = OccupancyGrid()
 
         # the number of particles used in the particle filter
-        self.num_particles = 1000
+        self.num_particles = 10000
 
         # initialize the particle cloud array
         self.particle_cloud = []
