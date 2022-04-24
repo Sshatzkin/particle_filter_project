@@ -354,9 +354,9 @@ class ParticleFilter:
         average_point = Point(0,0,0)
         average_yaw = 0
         for part in self.particle_cloud:
-            average_point.x += part.pose.position.x * part.w
-            average_point.y += part.pose.position.y * part.w
-            average_yaw += get_yaw_from_pose(part.pose) * part.w
+            average_point.x += part.pose.position.x
+            average_point.y += part.pose.position.y
+            average_yaw += get_yaw_from_pose(part.pose)
         average_point.x /= len(self.particle_cloud)
         average_point.y /= len(self.particle_cloud)
         average_yaw /= len(self.particle_cloud)
