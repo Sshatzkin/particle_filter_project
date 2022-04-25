@@ -24,7 +24,8 @@ Diogo Viveiros & Sam Shatzkin
 ## Objectives description
 
  The goal of this project was to implement a particle localization filter which finds and follows the location of the turtlebot on a map of the maze that it currently inhabits.
-## High-level description (1 paragraph)
+
+## High-level description
 
 Our approach starts with 10,000 particles randomly distributed accross the map, each representing a possible position and orientation of the robot. Each time that the robot's movement threshold is reached, we first move each particle corresponding with the movement of the robot, and we use a likelihood field algorithm to compare the measurements of the robot's sensors in 8 directions to the simulated measurements that would be returned if the robot was at each of our 10,000 proposed locations. Each particle is weighted according to the similartiy of its simulated measurements to the actual measurements, and then particles are resampled according to this weight. By repeating these steps, and adding noise in the movement and resampling steps, we lead the particles to converge into a cluster on the robot's actual location. 
 
