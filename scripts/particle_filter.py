@@ -176,7 +176,7 @@ class ParticleFilter:
 
         for i in range(self.num_particles):
             # create a new particle
-            randPosition = Point(randrange(-50, 10) * resolution, randrange(-50, 10) * resolution, 0)
+            randPosition = Point(randrange(-60, 5) * resolution, randrange(-50, 10) * resolution, 0)
             randQuatvalues = quaternion_from_euler(0, 0, random() * 2 * math.pi)
 
             p = Particle(Pose(), 1.0)
