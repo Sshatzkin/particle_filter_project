@@ -3,6 +3,7 @@
 Diogo Viveiros & Sam Shatzkin
 
 ![maze_navigating.gif](https://github.com/Sshatzkin/warmup_project/blob/main/maze_navigating.gif)
+![maze_screen_navigation.gif](https://github.com/Sshatzkin/warmup_project/blob/main/maze_screen_navigation.gif)
 
 ## Implementation Plan
 
@@ -46,6 +47,8 @@ The main steps are,
 
 ### Movement model
 
+ Our movement model is contained within two functions: **movement_model** (a helper function that starts on line 38) and **update_particles_with_motion_model** which starts on line 409. Update_particles_with_motion_model starts by reading the odometry data and creating a delta in the x and y coordinates to figure out how much its position it changes. We also store the old and the new yaws that the odometry data provides us in order to then implement our movement model precisely. We decided that the best way to update the particles' motions was to use a "Rotate, Move, Rotate" movement model as from our lessons that seemed to most consistently provide the most accurate results when there were motion updates that occurred when the robot didn't merely go completely straight in the x or y direction. All of the movement model is implemented in the helper function, whre we calculate the first rotation but taking the arc tangent of the x and y movement and then subtracting it by the old yaw. We then use the distance formula to calculate the translation, and calculate the second rotation but taking the current yaw of the robot, and subtracting it from the amount we've already rotated and the old yaw of the robot. We then apply this formula to all the particles in our map, while also introducing some slight sampling noise to ensure thaty won't cluster in  exactly the same spot. 
+
 ### Measurement model
 
   Our measurement model is update in the __update_particle_weights_with_measurement_model__ function. (Line 370) We update our measurement model using the likelihood field approach, using functions defined in the external likelihood_field.py file provided to us during the in-class likelihood field exercise. Additionally, we duplicated the function __compute_prob_zero_centered_gaussian__ from the class exercise into our particle_filter.py document.
@@ -66,7 +69,7 @@ The main steps are,
 
 ### Incorporation of noise
 
-We incorporate noise at two steps in the project, durig our movement update step in __movement_model__(line 38), and during our resampling step in __resample_particles__(line 246).
+We incorporate noise at two steps in the project, during our movement update step in __movement_model__(line 38), and during our resampling step in __resample_particles__(line 246).
 
 In our movement model, we used a turn-move-turn approach, and added noise to each of the rotations and forward movements. Often, this noise is lost in the resampling process, because when a single point is sampled many times, the final sample loses a lot of this noise. We found our results to be best when we added a little more noise back after the resampling phase, to ensure that the published particle cloud always contained a cloud of slightly different particles.
 
@@ -80,12 +83,16 @@ In order to update the estimated robot pose, we take the average of the x and y 
 
 ## Challenges (1 paragraph)
 
-Describe the challenges you faced and how you overcame them.
+We believe that the most challenging parts of these assigments were to implement the likelihood field and the "Move, Rotate, Move" algorithms that we learned in class. Particularly the likelihood field required a lot of study and analysis of the website and slides in order to fully understand all the steps and to make sure we weren't doing any of them wrong or skipping them altogether. The movement model also took some analysis as there were certain elements in the algorithm, such as understanding the role of the arctangent function and the sampling, which took a while to understand. We also had some smaller issues that were a bit tricky to solve in the form of bugs. For example, we spent a lot of time understanding how to create a Quaternion, as we didn't initially understand that the function euler_to_quaternion doesn't return a quaternion, but rather an array which then allows us to initialize a Quaternion variable. Figuring out in which functions we should add noise to also took a while. We also encountered a Python bug that took us a few hours to solve where we were doing particle.weight instead of particle.w, meaning our weights weren't actually updating. We also found it intellectually challenging to tune the parameters, but actually did quite well. 
 
 ## Future work (1 paragraph)
 
-If you had more time, how would you improve your particle filter localization?
+Given more time, we would to create a function that would programatically identify where the map was located and fill that area with particles, as we currently had to manually adjust where the particles would populate based on where the map was located and its size. Doing it programatically would be really cool because then we could automatically load any map in and the particle field would work instantly! Right now, we need to change a few paramaters to make sure the clustering is as good as possible for our specific map. We also think it would be good to find ways to reduce the time it takes for the robot to move and for the particles to update, whether that would mean changing some parameters like the ovement threshold or trying to find the optimal number of particles that gives accurate locations but doesn't hog a lot of computer resources. 
 
 ## Takeaways (at least 2 bullet points with 2-3 sentences per bullet point)
 
- What are your key takeaways from this project that would help you/others in future robot programming assignments working in pairs? For each takeaway, provide a few sentences of elaboration.
+ - Quaternions are interesting mathematical objects that allow us to store yaw and rotational data for our robot and its estimation particles. Setting them up can be a bit tricky at first, requiring us to get an array from euler_to_quaternion and then setting those elements to a Quaternion variable. 
+ - Likelihood fields are really, really, good at estimating likely positions of robots when we are going around objects such as walls. After implementing the likelihood field, we immediately noticed that the clustering was much tighter around regions like walls if the robot was also near a wall, and any movement afterwards would quickly change the cluster to the right area almost always. 
+ - A "Rotate, Move, Rotate" movement model for particle estimation is one of the most ideal as it can account for rotational movements quite well while still remaining fairly close to the robot. However, it will never be exactly in the same position as the robot itself, which is a good reminder that these particle estimations are just that, estimations. They will never be fully perfect.
+ - A particle filter is still dependent on us knowing the environment, which in this case we mapped with SLAM. It works extremely well in a non-foreign environment, but would be extremely unlikely to be effective in maps which are very unknown. We would need more advanced tracking methodologies such as SLAM running in real-time or some kind of GPS tracking in order to locate our robots in these scenarios. 
+
