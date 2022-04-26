@@ -2,6 +2,8 @@
 
 Diogo Viveiros & Sam Shatzkin
 
+![maze_navigating.gif](https://github.com/Sshatzkin/warmup_project/blob/main/maze_navigating.gif)
+
 ## Implementation Plan
 
 - initialize_particle_cloud: We will initialize our particle cloud by mapping our environment with SLAM initially. Afterwards, we will place an extremely large amount of particles throughout this environment, essentially "filling" this space with randomly distributed particles which we can then use to estimate the robot's position later.
@@ -27,7 +29,7 @@ Diogo Viveiros & Sam Shatzkin
 
 ## High-level description
 
-Our approach starts with 10,000 particles randomly distributed accross the map, each representing a possible position and orientation of the robot. Each time that the robot's movement threshold is reached, we first move each particle corresponding with the movement of the robot, and we use a likelihood field algorithm to compare the measurements of the robot's sensors in 8 directions to the simulated measurements that would be returned if the robot was at each of our 10,000 proposed locations. Each particle is weighted according to the similartiy of its simulated measurements to the actual measurements, and then particles are resampled according to this weight. By repeating these steps, and adding noise in the movement and resampling steps, we lead the particles to converge into a cluster on the robot's actual location. 
+Our approach starts with 10,000 particles randomly distributed accross the map, each representing a possible position and orientation of the robot. Each time that the robot's movement threshold is reached, we first move each particle corresponding with the movement of the robot, and we use a likelihood field algorithm to compare the measurements of the robot's sensors in 8 directions to the simulated measurements that would be returned if the robot was at each of our 10,000 proposed locations. Each particle is weighted according to the similartiy of its simulated measurements to the actual measurements, and then particles are resampled according to this weight. By repeating these steps, and adding noise in the movement and resampling steps, we lead the particles to converge into a cluster on the robot's actual location.
 
 ## Project Components
 
@@ -37,6 +39,10 @@ Functions/code description (1-3 sentences per function / portion of code): Descr
 The main steps are,
 
 ### Initialization of particle cloud
+
+  We initialize our particle cloud in the __initialize_particle_cloud__ function provided to us as part of the __ParticleFilter__ class. (Lines 167-188)
+
+  Our particle cloud initialization code generates 10,000 particles at random locations within the bounds of our maze map with random yaw rotations. Each of these particles is assigned the weight "1", and then normalize particles is called to ensure the weights of all particles sum to 1, before publishing them.
 
 ### Movement model
 
