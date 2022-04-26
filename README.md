@@ -76,6 +76,10 @@ In order to update the estimated robot pose, we take the average of the x and y 
 
 ### Optimization of parameters
 
+Most of our parameters were fairly straight forward to tune - the 10000 particles that the project initially specified worked fine for us, and we used the same likelihood field parameters specified in class.
+
+The most interesting optimization challenge we faced was figuring out how much noise to add, and when to add it. As described in the "Incorporation of Noise" section above, we added noise in the movement phase and in the resampling phase. We found that our particle filter produced the most successful clusters with a little more noise than we anticipated, and that adding it before and after resampling gave us the best clusters.
+
 ## Challenges
 
 We believe that the most challenging parts of these assigments were to implement the likelihood field and the "Move, Rotate, Move" algorithms that we learned in class. Particularly the likelihood field required a lot of study and analysis of the website and slides in order to fully understand all the steps and to make sure we weren't doing any of them wrong or skipping them altogether. The movement model also took some analysis as there were certain elements in the algorithm, such as understanding the role of the arctangent function and the sampling, which took a while to understand. We also had some smaller issues that were a bit tricky to solve in the form of bugs. For example, we spent a lot of time understanding how to create a Quaternion, as we didn't initially understand that the function euler_to_quaternion doesn't return a quaternion, but rather an array which then allows us to initialize a Quaternion variable. Figuring out in which functions we should add noise to also took a while. We also encountered a Python bug that took us a few hours to solve where we were doing particle.weight instead of particle.w, meaning our weights weren't actually updating. We also found it intellectually challenging to tune the parameters, but actually did quite well. 
