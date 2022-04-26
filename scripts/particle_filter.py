@@ -369,8 +369,7 @@ class ParticleFilter:
 
     
     def update_particle_weights_with_measurement_model(self, data):
-
-        # TODO
+        # DONE
         #Compare actual sensor readings w/ particle's "readings", and assign a weight based on difference
 
         #max_x = self.map.info.width * self.map.info.resolution
@@ -412,7 +411,7 @@ class ParticleFilter:
         # based on the how the robot has moved (calculated from its odometry), we'll  move
         # all of the particles correspondingly
 
-        # TODO
+        # DONE
                         
         curr_x = self.odom_pose.pose.position.x
         old_x = self.odom_pose_last_motion_update.pose.position.x
