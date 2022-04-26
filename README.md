@@ -34,11 +34,6 @@ Our approach starts with 10,000 particles randomly distributed accross the map, 
 
 ## Project Components
 
-For each of the main steps of the particle filter localization, please provide the following:
-Code location (1-3 sentences): Please describe where in your code you implemented this step of the particle filter localization.
-Functions/code description (1-3 sentences per function / portion of code): Describe the structure of your code. For the functions you wrote, describe what each of them does and how they contribute to this step of the particle filter localization.
-The main steps are,
-
 ### Initialization of particle cloud
 
   We initialize our particle cloud in the __initialize_particle_cloud__ function provided to us as part of the __ParticleFilter__ class. (Lines 167-188)
@@ -81,18 +76,17 @@ In order to update the estimated robot pose, we take the average of the x and y 
 
 ### Optimization of parameters
 
-## Challenges (1 paragraph)
+## Challenges
 
 We believe that the most challenging parts of these assigments were to implement the likelihood field and the "Move, Rotate, Move" algorithms that we learned in class. Particularly the likelihood field required a lot of study and analysis of the website and slides in order to fully understand all the steps and to make sure we weren't doing any of them wrong or skipping them altogether. The movement model also took some analysis as there were certain elements in the algorithm, such as understanding the role of the arctangent function and the sampling, which took a while to understand. We also had some smaller issues that were a bit tricky to solve in the form of bugs. For example, we spent a lot of time understanding how to create a Quaternion, as we didn't initially understand that the function euler_to_quaternion doesn't return a quaternion, but rather an array which then allows us to initialize a Quaternion variable. Figuring out in which functions we should add noise to also took a while. We also encountered a Python bug that took us a few hours to solve where we were doing particle.weight instead of particle.w, meaning our weights weren't actually updating. We also found it intellectually challenging to tune the parameters, but actually did quite well. 
 
-## Future work (1 paragraph)
+## Future work
 
-Given more time, we would to create a function that would programatically identify where the map was located and fill that area with particles, as we currently had to manually adjust where the particles would populate based on where the map was located and its size. Doing it programatically would be really cool because then we could automatically load any map in and the particle field would work instantly! Right now, we need to change a few paramaters to make sure the clustering is as good as possible for our specific map. We also think it would be good to find ways to reduce the time it takes for the robot to move and for the particles to update, whether that would mean changing some parameters like the ovement threshold or trying to find the optimal number of particles that gives accurate locations but doesn't hog a lot of computer resources. 
+Given more time, we would to create a function that would programatically identify where the map was located and fill that area with particles, as we currently had to manually adjust where the particles would populate based on where the map was located and its size. Doing it programatically would be really cool because then we could automatically load any map in and the particle field would work instantly! Right now, we need to change a few paramaters to make sure the clustering is as good as possible for our specific map. We also think it would be good to find ways to reduce the time it takes for the robot to move and for the particles to update, whether that would mean changing some parameters like the ovement threshold or trying to find the optimal number of particles that gives accurate locations but doesn't hog a lot of computer resources.
 
-## Takeaways (at least 2 bullet points with 2-3 sentences per bullet point)
+## Takeaways
 
- - Quaternions are interesting mathematical objects that allow us to store yaw and rotational data for our robot and its estimation particles. Setting them up can be a bit tricky at first, requiring us to get an array from euler_to_quaternion and then setting those elements to a Quaternion variable. 
- - Likelihood fields are really, really, good at estimating likely positions of robots when we are going around objects such as walls. After implementing the likelihood field, we immediately noticed that the clustering was much tighter around regions like walls if the robot was also near a wall, and any movement afterwards would quickly change the cluster to the right area almost always. 
+ - Quaternions are interesting mathematical objects that allow us to store yaw and rotational data for our robot and its estimation particles. Setting them up can be a bit tricky at first, requiring us to get an array from euler_to_quaternion and then setting those elements to a Quaternion variable.
+ - Likelihood fields are really, really, good at estimating likely positions of robots when we are going around objects such as walls. After implementing the likelihood field, we immediately noticed that the clustering was much tighter around regions like walls if the robot was also near a wall, and any movement afterwards would quickly change the cluster to the right area almost always.
  - A "Rotate, Move, Rotate" movement model for particle estimation is one of the most ideal as it can account for rotational movements quite well while still remaining fairly close to the robot. However, it will never be exactly in the same position as the robot itself, which is a good reminder that these particle estimations are just that, estimations. They will never be fully perfect.
- - A particle filter is still dependent on us knowing the environment, which in this case we mapped with SLAM. It works extremely well in a non-foreign environment, but would be extremely unlikely to be effective in maps which are very unknown. We would need more advanced tracking methodologies such as SLAM running in real-time or some kind of GPS tracking in order to locate our robots in these scenarios. 
-
+ - A particle filter is still dependent on us knowing the environment, which in this case we mapped with SLAM. It works extremely well in a non-foreign environment, but would be extremely unlikely to be effective in maps which are very unknown. We would need more advanced tracking methodologies such as SLAM running in real-time or some kind of GPS tracking in order to locate our robots in these scenarios.
