@@ -48,11 +48,33 @@ The main steps are,
 
 ### Measurement model
 
+  Our measurement model is update in the __update_particle_weights_with_measurement_model__ function. (Line 370) We update our measurement model using the likelihood field approach, using functions defined in the external likelihood_field.py file provided to us during the in-class likelihood field exercise. Additionally, we duplicated the function __compute_prob_zero_centered_gaussian__ from the class exercise into our particle_filter.py document.
+
+  Our __update_particle_weights_with_measurement_model__ function takes the most recent LIDAR range data from the robot, and uses the likelihood field algorithm to calculate the likelihood that each particle would return this LIDAR data given its position and orientation in the map. This probability is used to assign each particle a weight, which will impact that particle's chances of being resampled.
+
+  More specifically, we projected LIDAR data in 8 directions (at 45 degree increments from each other) for each particle, and retrieved the distance to the nearest obstacle to each of these projected beams using likelihood field functions. The __compute_prob_zero_centered_gaussian__ is paramaterized with these distances and with 0.1, and we use the result of this function to update the new weight that is assigned to each particle.
+
 ### Resampling
+
+  Our resampling step happens in two functions, __resample_particles__ (line 246) and __draw_random_sample__ (line 66), which is called by __resample particles__.
+
+  The first step to __resample_particles__ is a call to __draw_random_sample__, a function which collects a weighted random sample of 10,000 particles from the existing particle cloud.
+
+  The next step is to add a small amount of noise to these collected particles, to ensure that we maintain diversity in the positions and orientations of the particles before the next update round.
+
+  Finally we update the particle cloud to be equal to this new array of noisy, resampled particles that have been generated.
 
 ### Incorporation of noise
 
+We incorporate noise at two steps in the project, durig our movement update step in __movement_model__(line 38), and during our resampling step in __resample_particles__(line 246).
+
+In our movement model, we used a turn-move-turn approach, and added noise to each of the rotations and forward movements. Often, this noise is lost in the resampling process, because when a single point is sampled many times, the final sample loses a lot of this noise. We found our results to be best when we added a little more noise back after the resampling phase, to ensure that the published particle cloud always contained a cloud of slightly different particles.
+
 ### Updating estimated robot pose
+
+The estimated robot pose is updated in function __update_estimated_robot_pose__ (line 351).
+
+In order to update the estimated robot pose, we take the average of the x and y coordinates of every particle in the cloud, as well as the average of the yaw of every particle in the cloud. We assign the estimated robot pose to this average position and orientation.
 
 ### Optimization of parameters
 
