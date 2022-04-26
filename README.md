@@ -2,8 +2,8 @@
 
 Diogo Viveiros & Sam Shatzkin
 
-![maze_navigating.gif](https://github.com/Sshatzkin/warmup_project/blob/main/maze_navigating.gif)
-![maze_screen_navigation.gif](https://github.com/Sshatzkin/warmup_project/blob/main/maze_screen_navigation.gif)
+![maze_navigating.gif](maze_navigating.gif)
+![maze_screen_navigation.gif](maze_screen_navigation.gif)
 
 ## Implementation Plan
 
